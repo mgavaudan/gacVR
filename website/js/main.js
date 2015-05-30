@@ -15,12 +15,12 @@ function init() {
 	container = document.createElement( 'div' );
 	document.body.appendChild( container );
 
-	var info = document.createElement( 'div' );
+	var info = document.createElement( 'div' );	
 	info.style.position = 'absolute';
 	info.style.top = '10px';
 	info.style.width = '100%';
 	info.style.textAlign = 'center';
-	info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> webgl - interactive cubes';
+	info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> Gac VR';
 	container.appendChild( info );
 
 	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -61,9 +61,19 @@ function init() {
 
 	}
 
-	var loader = new THREE.ObjectLoader();
-		loader.load("/scene.json",function ( object ) {
-		scene.add( object );
+	
+	var loader = new THREE.OBJLoader();
+	loader.load( 'model.obj', function ( model ) {
+		
+		model.position.x = 0;
+		model.position.y = 0;
+		model.position.z = 0;
+
+		model.scale.x = 15;
+		model.scale.y = 15;
+		model.scale.z = 15;
+
+		scene.add( model );
 	});
 
 
