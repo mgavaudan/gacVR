@@ -8,7 +8,7 @@ var radius = 100, theta = 0;
 var dae;
 var loader = new THREE.ColladaLoader();
 loader.options.convertUpAxis = true;
-loader.load( 'js/model3.dae', function ( collada ) {
+loader.load( 'js/model.dae', function ( collada ) {
 	dae = collada.scene;
 	dae.traverse( function ( child ) {
 		if ( child instanceof THREE.SkinnedMesh ) {
@@ -16,7 +16,8 @@ loader.load( 'js/model3.dae', function ( collada ) {
 			animation.play();
 		}
 	} );
-	dae.scale.x = dae.scale.y = dae.scale.z = 20;
+	dae.scale.x = dae.scale.y = dae.scale.z = 1;
+	dae.position.x = dae.position.y = dae.position.z = 0;
 	dae.updateMatrix();
 	init();
 	animate();
@@ -53,40 +54,6 @@ function init() {
 
 	scene.add( dae );
 
-	// var size = 14, step = 1;
-	// var geometry = new THREE.Geometry();
-	// var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
-	// for ( var i = - size; i <= size; i += step ) {
-	// 	geometry.vertices.push( new THREE.Vector3( - size, - 0.04, i ) );
-	// 	geometry.vertices.push( new THREE.Vector3(   size, - 0.04, i ) );
-	// 	geometry.vertices.push( new THREE.Vector3( i, - 0.04, - size ) );
-	// 	geometry.vertices.push( new THREE.Vector3( i, - 0.04,   size ) );
-	// }
-	// var line = new THREE.Line( geometry, material, THREE.LinePieces );
-	// scene.add( line );
-
-	// var geometry = new THREE.IcosahedronGeometry(1, 1, 1);
-
-	// for ( var i = 0; i < 200; i ++ ) {
-
-	// 	var obj = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
-
-	// 	obj.position.x = Math.random() * 800 - 400;
-	// 	obj.position.y = Math.random() * 800 - 400;
-	// 	obj.position.z = Math.random() * 800 - 400;
-
-	// 	obj.rotation.x = Math.random() * 2 * Math.PI;
-	// 	obj.rotation.y = Math.random() * 2 * Math.PI;
-	// 	obj.rotation.z = Math.random() * 2 * Math.PI;
-
-	// 	obj.scale.x = Math.random()*15 + 5;
-	// 	obj.scale.y = Math.random()*15 + 5;
-	// 	obj.scale.z = Math.random()*15 + 5;
-
-	// 	scene.add( obj );
-
-	// }
-
 
 	//***************************************************************//
 	//***************************************************************//
@@ -112,7 +79,7 @@ function init() {
 		}
 	}
 
-	renderer.setClearColor( 0xf0f0f0 );
+	renderer.setClearColor( 0x7ec0ee );
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	renderer.sortObjects = false;
 	container.appendChild( renderer.domElement );
