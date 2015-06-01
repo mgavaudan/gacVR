@@ -38,14 +38,23 @@
 
 		<!-- libraries for VR control -->
 		<script src="js/three.min.js"></script>
-		<script src="js/VREffect.js"></script>
-		<script src="js/VRControls.js"></script>
-		<script src="js/stats.min.js"></script>
-		<script src="js/main.js"></script>
-		<script src="js/webvr-polyfill.js"></script>
-
 		<script src="js/ColladaLoader.js"></script>
-		<script src="js/OBJLoader.js"></script>
+		<!-- THREE.js effect which renders a scene with two cameras in it.
+		Puts the two images side-by-side. -->
+		<script src="js/VREffect.js"></script>
+		<!-- THREE.js controls which take advantage of the WebVR API.
+		Usually attached to the THREE.Camera to look around the scene. -->
+		<script src="js/VRControls.js"></script>
+		<!-- For fps info -->
+		<script src="js/stats.min.js"></script>
+		<!-- For Cardboard rendering.
+		On mobile, supports rotation via DeviceOrientation.
+		On desktop, supports looking with the mouse or with arrow keys. -->
+		<script src="js/webvr-polyfill.js"></script>
+		<script src="js/main.js"></script>
+		
 
+		
+		
 	</body>
 </html>

@@ -3,24 +3,36 @@ var camera, scene, projector, raycaster, renderer;
 var vrEffect;
 var vrControls;
 var fullScreenButton = document.querySelector( '.button' );
-
-var mouse = new THREE.Vector2(), INTERSECTED;
 var radius = 100, theta = 0;
 
-init();
-animate();
+var dae;
+var loader = new THREE.ColladaLoader();
+loader.options.convertUpAxis = true;
+loader.load( 'js/model3.dae', function ( collada ) {
+	dae = collada.scene;
+	dae.traverse( function ( child ) {
+		if ( child instanceof THREE.SkinnedMesh ) {
+			var animation = new THREE.Animation( child, child.geometry.animation );
+			animation.play();
+		}
+	} );
+	dae.scale.x = dae.scale.y = dae.scale.z = 20;
+	dae.updateMatrix();
+	init();
+	animate();
+} );
 
 function init() {
 
 	container = document.createElement( 'div' );
 	document.body.appendChild( container );
 
-	var info = document.createElement( 'div' );	
+	var info = document.createElement( 'div' );
 	info.style.position = 'absolute';
 	info.style.top = '10px';
 	info.style.width = '100%';
 	info.style.textAlign = 'center';
-	info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> Gac VR';
+	info.innerHTML = 'GacVR';
 	container.appendChild( info );
 
 	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -36,54 +48,55 @@ function init() {
 	scene.add( light );
 
 
-	//***********************  Model ********************************//
+	//***********************  Test ********************************//
 	//***************************************************************//
 
-	var geometry = new THREE.IcosahedronGeometry(1, 1, 1);
+	scene.add( dae );
 
-	for ( var i = 0; i < 10; i ++ ) {
+	// var size = 14, step = 1;
+	// var geometry = new THREE.Geometry();
+	// var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
+	// for ( var i = - size; i <= size; i += step ) {
+	// 	geometry.vertices.push( new THREE.Vector3( - size, - 0.04, i ) );
+	// 	geometry.vertices.push( new THREE.Vector3(   size, - 0.04, i ) );
+	// 	geometry.vertices.push( new THREE.Vector3( i, - 0.04, - size ) );
+	// 	geometry.vertices.push( new THREE.Vector3( i, - 0.04,   size ) );
+	// }
+	// var line = new THREE.Line( geometry, material, THREE.LinePieces );
+	// scene.add( line );
 
-		var obj = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+	// var geometry = new THREE.IcosahedronGeometry(1, 1, 1);
 
-		obj.position.x = Math.random() * 800 - 400;
-		obj.position.y = Math.random() * 800 - 400;
-		obj.position.z = Math.random() * 800 - 400;
+	// for ( var i = 0; i < 200; i ++ ) {
 
-		obj.rotation.x = Math.random() * 2 * Math.PI;
-		obj.rotation.y = Math.random() * 2 * Math.PI;
-		obj.rotation.z = Math.random() * 2 * Math.PI;
+	// 	var obj = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
 
-		obj.scale.x = Math.random()*15 + 5;
-		obj.scale.y = Math.random()*15 + 5;
-		obj.scale.z = Math.random()*15 + 5;
+	// 	obj.position.x = Math.random() * 800 - 400;
+	// 	obj.position.y = Math.random() * 800 - 400;
+	// 	obj.position.z = Math.random() * 800 - 400;
 
-		scene.add( obj );
+	// 	obj.rotation.x = Math.random() * 2 * Math.PI;
+	// 	obj.rotation.y = Math.random() * 2 * Math.PI;
+	// 	obj.rotation.z = Math.random() * 2 * Math.PI;
 
-	}
+	// 	obj.scale.x = Math.random()*15 + 5;
+	// 	obj.scale.y = Math.random()*15 + 5;
+	// 	obj.scale.z = Math.random()*15 + 5;
 
-	
-	var loader = new THREE.OBJLoader();
-	loader.load( 'model.obj', function ( model ) {
-		
-		model.position.x = 0;
-		model.position.y = 0;
-		model.position.z = 0;
+	// 	scene.add( obj );
 
-		model.scale.x = 15;
-		model.scale.y = 15;
-		model.scale.z = 15;
-
-		scene.add( model );
-	});
+	// }
 
 
 	//***************************************************************//
 	//***************************************************************//
+
+
 
 	projector = new THREE.Projector();
 	raycaster = new THREE.Raycaster();
 
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
+	renderer = new THREE.WebGLRenderer();
 
 	var fullScreenButton = document.querySelector( '.button' );
 	fullScreenButton.onclick = function() {
@@ -109,10 +122,6 @@ function init() {
 	stats.domElement.style.top = '0px';
 	container.appendChild( stats.domElement );
 
-	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-	//
-
 	window.addEventListener( 'resize', onWindowResize, false );
 
 }
@@ -126,17 +135,6 @@ function onWindowResize() {
 
 }
 
-function onDocumentMouseMove( event ) {
-
-	event.preventDefault();
-
-	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-}
-
-//
-
 function animate() {
 
 	requestAnimationFrame( animate );
@@ -148,7 +146,7 @@ function animate() {
 
 function render() {
 
-	theta += 0.1;
+	theta += 0.01;
 
 	camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
 	camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
@@ -157,32 +155,10 @@ function render() {
 
 	// find intersections
 
-	var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+	var vector = new THREE.Vector3( 10, 10, 1 );
 	projector.unprojectVector( vector, camera );
 
 	raycaster.set( camera.position, vector.sub( camera.position ).normalize() );
-
-	var intersects = raycaster.intersectObjects( scene.children );
-
-	if ( intersects.length > 0 ) {
-
-		if ( INTERSECTED != intersects[ 0 ].object ) {
-
-			if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-
-			INTERSECTED = intersects[ 0 ].object;
-			INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-			INTERSECTED.material.emissive.setHex( 0xff0000 );
-
-		}
-
-	} else {
-
-		if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-
-		INTERSECTED = null;
-
-	}
 
 	vrControls.update();
 	vrEffect.render( scene, camera );
