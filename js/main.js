@@ -5,28 +5,17 @@ var vrControls;
 var fullScreenButton = document.querySelector( '.button' );
 var radius = 100, theta = 0;
 
-var dae;
-var loader = new THREE.ColladaLoader();
-loader.options.convertUpAxis = true;
-loader.load( 'js/model.dae', function ( collada ) {
-	dae = collada.scene;
-	dae.traverse( function ( child ) {
-		if ( child instanceof THREE.SkinnedMesh ) {
-			var animation = new THREE.Animation( child, child.geometry.animation );
-			animation.play();
-		}
-	} );
-	dae.scale.x = dae.scale.y = dae.scale.z = 1;
-	dae.position.x = dae.position.y = dae.position.z = 0;
-	dae.updateMatrix();
-	init();
-	animate();
-} );
+init();
+animate();
 
 function init() {
 
+	// canvas
+
 	container = document.createElement( 'div' );
 	document.body.appendChild( container );
+
+	// text info top of screen
 
 	var info = document.createElement( 'div' );
 	info.style.position = 'absolute';
@@ -36,9 +25,13 @@ function init() {
 	info.innerHTML = 'GacVR';
 	container.appendChild( info );
 
+	/*********************** three.js scene *********************************//
+
 	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
 
 	scene = new THREE.Scene();
+
+	//lights
 
 	var light = new THREE.DirectionalLight( 0xffffff, 2 );
 	light.position.set( 1, 1, 1 ).normalize();
@@ -48,17 +41,70 @@ function init() {
 	light.position.set( -1, -1, -1 ).normalize();
 	scene.add( light );
 
+	//model
 
-	//***********************  Test ********************************//
-	//***************************************************************//
+	var onProgress = function ( xhr ) {
+		if ( xhr.lengthComputable ) {
+			var percentComplete = xhr.loaded / xhr.total * 100;
+			console.log( Math.round(percentComplete, 2) + '% downloaded' );
+		}
+	};
+	var onError = function ( xhr ) {
+	};
+	THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+	var loader = new THREE.OBJMTLLoader();
+	loader.load( 'assets/FirstPersonExampleMap.obj', 'assets/FirstPersonExampleMap.mtl', function ( object ) {
+		object.position.y = - 80;
+		scene.add( object );
+	}, onProgress, onError );
 
-	scene.add( dae );
+	//floor
+
+	// var texture = THREE.ImageUtils.loadTexture('assets/asphalt.jpg');
+	// texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+	// texture.repeat.set(10, 10);
+ 
+	// var ground = new THREE.Mesh( new THREE.PlaneGeometry(window.innerWidth, window.innerHeight),
+	// 	new THREE.MeshBasicMaterial(
+	// 	{ color: this.textureGround ? 0xffffff : 0xaaaaaa, ambient: 0x333333, map:texture }
+	// 	)
+	// );
+	// ground.rotation.x = -Math.PI/2;
+	// ground.position.y = -250;
+	// scene.add( ground );
+	
+	//sky
+
+    // define path and box sides images
+    var path = 'assets/';
+    var sides = [ path + 'sbox_px.jpg', path + 'sbox_nx.jpg', path + 'sbox_py.jpg', path + 'sbox_ny.jpg', path + 'sbox_pz.jpg', path + 'sbox_nz.jpg' ];
+ 
+    // load images
+    var scCube = THREE.ImageUtils.loadTextureCube(sides);
+    scCube.format = THREE.RGBFormat;
+ 
+    // prepare skybox material (shader)
+    var skyShader = THREE.ShaderLib["cube"];
+    skyShader.uniforms["tCube"].value = scCube;
+    var skyMaterial = new THREE.ShaderMaterial( {
+      fragmentShader: skyShader.fragmentShader, vertexShader: skyShader.vertexShader,
+      uniforms: skyShader.uniforms, depthWrite: false, side: THREE.BackSide
+    });
+ 
+    // create Mesh with cube geometry and add to the scene
+    var skyBox = new THREE.Mesh(new THREE.CubeGeometry(500, 500, 500), skyMaterial);
+    skyMaterial.needsUpdate = true;
+ 
+    this.scene.add(skyBox);
+	
 
 
-	//***************************************************************//
-	//***************************************************************//
+
+	//************************************************************************//
 
 
+
+	// VR WebGL
 
 	projector = new THREE.Projector();
 	raycaster = new THREE.Raycaster();
@@ -105,7 +151,6 @@ function onWindowResize() {
 function animate() {
 
 	requestAnimationFrame( animate );
-
 	render();
 	stats.update();
 
@@ -113,12 +158,12 @@ function animate() {
 
 function render() {
 
-	theta += 0.01;
+	theta += 0.05;
 
-	camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
-	camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
-	camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
-	camera.lookAt( scene.position );
+	camera.position.x = radius * Math.sin( 2*THREE.Math.degToRad( theta ) );
+	camera.position.y = radius * Math.abs(Math.sin( THREE.Math.degToRad( theta ) ));
+	camera.position.z = radius * Math.cos( 2*THREE.Math.degToRad( theta ) );
+	camera.lookAt( dae.position );
 
 	// find intersections
 
