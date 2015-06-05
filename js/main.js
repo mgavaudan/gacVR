@@ -67,7 +67,7 @@ function init() {
 	};
 	var onError = function ( xhr ) {
 	};
-	THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+	// THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'assets/FirstPersonExampleMap.obj', 'assets/FirstPersonExampleMap.mtl', function ( object ) {
 		object.position.y =  0;
