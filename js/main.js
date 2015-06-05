@@ -3,7 +3,7 @@ var camera, scene, projector, raycaster, renderer;
 var vrEffect;
 var vrControls;
 var fullScreenButton = document.querySelector( '.button' );
-var radius = 100, theta = 0;
+var radius = 5000, theta = 0;
 
 init();
 animate();
@@ -25,21 +25,37 @@ function init() {
 	info.innerHTML = 'GacVR';
 	container.appendChild( info );
 
-	/*********************** three.js scene *********************************//
+	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 100000 );
+	
 
-	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+	/*********************** three.js scene *********************************/
 
 	scene = new THREE.Scene();
 
 	//lights
 
-	var light = new THREE.DirectionalLight( 0xffffff, 2 );
-	light.position.set( 1, 1, 1 ).normalize();
+	var light = new THREE.DirectionalLight( 0xffffff );
+	light.position.set( 10000, 10000, -10000 ).normalize();
 	scene.add( light );
 
-	var light = new THREE.DirectionalLight( 0xffffff );
-	light.position.set( -1, -1, -1 ).normalize();
-	scene.add( light );
+	var light0 = new THREE.DirectionalLight( 0xffffff );
+	light0.position.set( -10000, 10000, 10000 ).normalize();
+	scene.add( light0 );
+
+	var light1 = new THREE.DirectionalLight( 0xffffff, 2 );
+	light1.position.set( 10000, 10000, 10000 ).normalize();
+	scene.add( light1 );
+
+	var light2 = new THREE.DirectionalLight( 0xffffff );
+	light2.position.set( -10000, 10000, -10000 ).normalize();
+	scene.add( light2 );
+
+	var light3 = new THREE.AmbientLight( 0xffffff ); // soft white light
+	light3.position.set( 6000, 6000, 10000 ).normalize();
+	scene.add( light3 );
+
+	var light4 = new THREE.HemisphereLight(0xFDB813, 0xffffff , 5);
+	scene.add( light4 );
 
 	//model
 
@@ -54,7 +70,7 @@ function init() {
 	THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'assets/FirstPersonExampleMap.obj', 'assets/FirstPersonExampleMap.mtl', function ( object ) {
-		object.position.y = - 80;
+		object.position.y =  0;
 		scene.add( object );
 	}, onProgress, onError );
 
@@ -92,19 +108,12 @@ function init() {
     });
  
     // create Mesh with cube geometry and add to the scene
-    var skyBox = new THREE.Mesh(new THREE.CubeGeometry(500, 500, 500), skyMaterial);
+    var skyBox = new THREE.Mesh(new THREE.CubeGeometry(50000, 50000, 50000), skyMaterial);
     skyMaterial.needsUpdate = true;
  
     this.scene.add(skyBox);
-	
 
-
-
-	//************************************************************************//
-
-
-
-	// VR WebGL
+    // VR WebGL
 
 	projector = new THREE.Projector();
 	raycaster = new THREE.Raycaster();
@@ -137,6 +146,10 @@ function init() {
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
+
+
+	//************************************************************************//
+
 }
 
 function onWindowResize() {
@@ -163,7 +176,7 @@ function render() {
 	camera.position.x = radius * Math.sin( 2*THREE.Math.degToRad( theta ) );
 	camera.position.y = radius * Math.abs(Math.sin( THREE.Math.degToRad( theta ) ));
 	camera.position.z = radius * Math.cos( 2*THREE.Math.degToRad( theta ) );
-	camera.lookAt( dae.position );
+	camera.lookAt( scene.position );
 
 	// find intersections
 

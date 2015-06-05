@@ -19,7 +19,7 @@ THREE.DDSLoader.parse = function ( buffer, loadMipmaps ) {
 	// All values and structures referenced from:
 	// http://msdn.microsoft.com/en-us/library/bb943991.aspx/
 
-	var DDS_MAGIC = 0x20534444;
+	var DDS_MAGIC = 'DDS ';
 
 	var DDSD_CAPS = 0x1,
 		DDSD_HEIGHT = 0x2,
