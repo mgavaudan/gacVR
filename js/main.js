@@ -113,6 +113,9 @@ function init() {
  
     this.scene.add(skyBox);
 
+    //************************************************************************//
+
+
     // VR WebGL
 
 	projector = new THREE.Projector();
@@ -146,9 +149,6 @@ function init() {
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
-
-
-	//************************************************************************//
 
 }
 
