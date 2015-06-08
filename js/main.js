@@ -34,28 +34,29 @@ function init() {
 
 	//lights
 
-	var light = new THREE.DirectionalLight( 0xffffff );
-	light.position.set( 10000, 10000, -10000 ).normalize();
+	// var light = new THREE.DirectionalLight( 0xffffff );
+	// light.position.set( 10000, 10000, -10000 ).normalize();
+	// scene.add( light );
+
+	// var light0 = new THREE.DirectionalLight( 0xffffff );
+	// light0.position.set( -10000, 10000, 10000 ).normalize();
+	// scene.add( light0 );
+
+	var light = new THREE.PointLight( 0xffffff, 1);
+	light.position.set( 10000, 10000, 10000 ).normalize();
 	scene.add( light );
 
-	var light0 = new THREE.DirectionalLight( 0xffffff );
-	light0.position.set( -10000, 10000, 10000 ).normalize();
-	scene.add( light0 );
+	var light = new THREE.PointLight( 0xffffff, 1);
+	light.position.set( -10000, -10000, -10000 ).normalize();
+	scene.add( light );
 
-	var light1 = new THREE.DirectionalLight( 0xffffff, 2 );
-	light1.position.set( 10000, 10000, 10000 ).normalize();
-	scene.add( light1 );
 
-	var light2 = new THREE.DirectionalLight( 0xffffff );
-	light2.position.set( -10000, 10000, -10000 ).normalize();
+	// var light3 = new THREE.AmbientLight( 0xffffff ); // soft white light
+	// light3.position.set( 6000, 6000, 10000 ).normalize();
+	// scene.add( light3 );
+
+	var light2 = new THREE.HemisphereLight(0xd3d3d3, 0xffffff , 0.2);
 	scene.add( light2 );
-
-	var light3 = new THREE.AmbientLight( 0xffffff ); // soft white light
-	light3.position.set( 6000, 6000, 10000 ).normalize();
-	scene.add( light3 );
-
-	var light4 = new THREE.HemisphereLight(0xFDB813, 0xffffff , 5);
-	scene.add( light4 );
 
 	//model
 
