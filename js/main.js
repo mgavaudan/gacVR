@@ -25,12 +25,25 @@ function init() {
 	info.innerHTML = 'GacVR';
 	container.appendChild( info );
 
+	var uploadstat = document.createElement( 'div' );
+	uploadstat.style.position = 'absolute';
+	uploadstat.style.top = '150px';
+	uploadstat.style.width = '100%';
+	uploadstat.style.size = '25px';
+	uploadstat.style.textAlign = 'center';
+	container.appendChild( uploadstat );
+
+	scene = new THREE.Scene();
+
 	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 100000 );
+	camera.position.y=250;
+	
+	scene.add( camera );
 	
 
 	/*********************** three.js scene *********************************/
 
-	scene = new THREE.Scene();
+	
 
 	//lights
 
@@ -54,7 +67,7 @@ function init() {
 	// light3.position.set( 6000, 6000, 10000 ).normalize();
 	// scene.add( light3 );
 
-	var light4 = new THREE.HemisphereLight(0xffffff, 0xffffff , 1);
+	var light4 = new THREE.HemisphereLight();
 	scene.add( light4 );
 
 	//model
@@ -63,6 +76,10 @@ function init() {
 		if ( xhr.lengthComputable ) {
 			var percentComplete = xhr.loaded / xhr.total * 100;
 			console.log( Math.round(percentComplete, 2) + '% downloaded' );
+			uploadstat.innerHTML = Math.round(percentComplete, 2) + '% downloaded';
+			if ( percentComplete == 100 ) {
+				uploadstat.innerHTML = "";
+			};
 		}
 	};
 	var onError = function ( xhr ) {
@@ -171,12 +188,8 @@ function animate() {
 
 function render() {
 
-	theta += 0.05;
+	setControls();
 
-	camera.position.x = radius * Math.sin( 2*THREE.Math.degToRad( theta ) );
-	camera.position.y = radius * Math.abs(Math.sin( THREE.Math.degToRad( theta ) ));
-	camera.position.z = radius * Math.cos( 2*THREE.Math.degToRad( theta ) );
-	camera.lookAt( scene.position );
 
 	// find intersections
 
@@ -189,3 +202,102 @@ function render() {
 	vrEffect.render( scene, camera );
 
 }
+
+function setControls() {
+    
+   
+    var controls = {
+        left: false,
+        up: false,
+        right: false,
+        down: false
+    };
+    
+    jQuery(document).keydown(function (e) {
+        var prevent = true;
+        // Update the state of the attached control to "true"
+        switch (e.keyCode) {
+            case 37:
+                controls.left = true;
+                break;
+            case 38:
+                controls.up = true;
+                break;
+            case 39:
+                controls.right = true;
+                break;
+            case 40:
+                controls.down = true;
+                break;
+            default:
+                prevent = false;
+        }
+        // Avoid the browser to react unexpectedly
+        if (prevent) {
+            e.preventDefault();
+        } else {
+            return;
+        }
+        // Update the character's direction
+        setDirection(controls);
+    });
+
+    // When the user releases a key
+    jQuery(document).keyup(function (e) {
+        var prevent = true;
+        // Update the state of the attached control to "false"
+        switch (e.keyCode) {
+            case 37:
+                controls.left = false;
+                break;
+            case 38:
+                controls.up = false;
+                break;
+            case 39:
+                controls.right = false;
+                break;
+            case 40:
+                controls.down = false;
+                break;
+            default:
+                prevent = false;
+        }
+        // Avoid the browser to react unexpectedly
+        if (prevent) {
+            e.preventDefault();
+        } else {
+            return;
+        }
+        // Update the character's direction
+        setDirection(controls);
+    });
+
+    // On resize
+    jQuery(window).resize(function () {
+        // Redefine the size of the renderer
+        onWindowResize();
+    });
+}
+
+function setDirection(controls) {
+
+		if(controls.left==true){
+        	camera.position.x=camera.position.x-0.01;
+        }
+        else if(controls.right==true){
+        	camera.position.x=camera.position.x+0.01;
+        }
+        else if(controls.up==true){
+        	camera.position.z=camera.position.z-0.01;
+        }
+        else if(controls.down==true){
+        	camera.position.z=camera.position.z+0.01;
+        }
+
+        camera.lookAt(scene.position);
+}
+
+
+
+
+
