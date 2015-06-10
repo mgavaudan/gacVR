@@ -1,14 +1,12 @@
 var container, stats;
 var camera, scene, projector, raycaster, renderer;
-var vrEffect;
-var vrControls;
 var fullScreenButton = document.querySelector( '.button' );
 var radius = 5000, theta = 0;
 
-init();
+init1();
 animate();
 
-function init() {
+function init1() {
 
 	// canvas
 
@@ -43,30 +41,6 @@ function init() {
 
 	/*********************** three.js scene *********************************/
 
-	
-
-	//lights
-
-	// var light = new THREE.DirectionalLight( 0xffffff );
-	// light.position.set( 10000, 10000, -10000 ).normalize();
-	// scene.add( light );
-
-	// var light0 = new THREE.DirectionalLight( 0xffffff );
-	// light0.position.set( -10000, 10000, 10000 ).normalize();
-	// scene.add( light0 );
-
-	// var light1 = new THREE.DirectionalLight( 0xffffff, 2 );
-	// light1.position.set( 10000, 10000, 10000 ).normalize();
-	// scene.add( light1 );
-
-	// var light2 = new THREE.DirectionalLight( 0xffffff );
-	// light2.position.set( -10000, 10000, -10000 ).normalize();
-	// scene.add( light2 );
-
-	// var light3 = new THREE.AmbientLight( 0xffffff ); // soft white light
-	// light3.position.set( 6000, 6000, 10000 ).normalize();
-	// scene.add( light3 );
-
 	var light4 = new THREE.HemisphereLight();
 	scene.add( light4 );
 
@@ -84,27 +58,13 @@ function init() {
 	};
 	var onError = function ( xhr ) {
 	};
-	// THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'assets/FirstPersonExampleMap.obj', 'assets/FirstPersonExampleMap.mtl', function ( object ) {
 		object.position.y =  0;
 		scene.add( object );
 	}, onProgress, onError );
 
-	//floor
-
-	// var texture = THREE.ImageUtils.loadTexture('assets/asphalt.jpg');
-	// texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-	// texture.repeat.set(10, 10);
- 
-	// var ground = new THREE.Mesh( new THREE.PlaneGeometry(window.innerWidth, window.innerHeight),
-	// 	new THREE.MeshBasicMaterial(
-	// 	{ color: this.textureGround ? 0xffffff : 0xaaaaaa, ambient: 0x333333, map:texture }
-	// 	)
-	// );
-	// ground.rotation.x = -Math.PI/2;
-	// ground.position.y = -250;
-	// scene.add( ground );
 	
 	//sky
 
@@ -140,19 +100,14 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer();
 
-	var fullScreenButton = document.querySelector( '.button' );
-	fullScreenButton.onclick = function() {
-		vrEffect.setFullScreen( true );
-	};
+	var threevr = new THREE.VR();
+	// threevr.init({
+	//   renderer: renderer,
+	//   camera: camera,
+	//   scene: scene
+	// });
 
-	vrEffect = new THREE.VREffect(renderer, VREffectLoaded);
-	vrControls = new THREE.VRControls(camera);
-	function VREffectLoaded(error) {
-		if (error) {
-			fullScreenButton.innerHTML = error;
-			fullScreenButton.classList.add('error');
-		}
-	}
+	
 
 	renderer.setClearColor( 0x7ec0ee );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -174,13 +129,14 @@ function onWindowResize() {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 
-	vrEffect.setSize( window.innerWidth, window.innerHeight );
+	// vrEffect.setSize( window.innerWidth, window.innerHeight );
 
 }
 
 function animate() {
 
 	requestAnimationFrame( animate );
+    threevr.animate();
 	render();
 	stats.update();
 
@@ -188,7 +144,7 @@ function animate() {
 
 function render() {
 
-	setControls();
+	// setControls();
 
 
 	// find intersections
@@ -198,8 +154,8 @@ function render() {
 
 	raycaster.set( camera.position, vector.sub( camera.position ).normalize() );
 
-	vrControls.update();
-	vrEffect.render( scene, camera );
+	// vrControls.update();
+	// vrEffect.render( scene, camera );
 
 }
 
