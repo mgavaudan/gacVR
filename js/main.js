@@ -22,41 +22,34 @@ function init() {
 	info.style.top = '10px';
 	info.style.width = '100%';
 	info.style.textAlign = 'center';
+	info.style.fontSize = '150px';
+	info.style.color = 'white';
+	info.style.fontFamily = "Arial,Charcoal,sans-serif";
 	info.innerHTML = 'GacVR';
 	container.appendChild( info );
 
+	var uploadstat = document.createElement( 'div' );
+	uploadstat.style.position = 'absolute';
+	uploadstat.style.top = '350px';
+	uploadstat.style.width = '100%';
+	uploadstat.style.fontSize = '25px';
+	uploadstat.style.textAlign = 'center';
+	container.appendChild( uploadstat );
+
+	scene = new THREE.Scene();
+
 	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 100000 );
+	camera.position.y=45;
+	camera.position.x=25;
+	
+	scene.add( camera );
 	
 
 	/*********************** three.js scene *********************************/
 
-	scene = new THREE.Scene();
 
-	//lights
-
-	// var light = new THREE.DirectionalLight( 0xffffff );
-	// light.position.set( 10000, 10000, -10000 ).normalize();
-	// scene.add( light );
-
-	// var light0 = new THREE.DirectionalLight( 0xffffff );
-	// light0.position.set( -10000, 10000, 10000 ).normalize();
-	// scene.add( light0 );
-
-	var light = new THREE.PointLight( 0xffffff, 1);
-	light.position.set( 10000, 10000, 10000 ).normalize();
+	var light = new THREE.HemisphereLight();
 	scene.add( light );
-
-	var light = new THREE.PointLight( 0xffffff, 1);
-	light.position.set( -10000, -10000, -10000 ).normalize();
-	scene.add( light );
-
-
-	// var light3 = new THREE.AmbientLight( 0xffffff ); // soft white light
-	// light3.position.set( 6000, 6000, 10000 ).normalize();
-	// scene.add( light3 );
-
-	var light2 = new THREE.HemisphereLight(0xd3d3d3, 0xffffff , 0.2);
-	scene.add( light2 );
 
 	//model
 
@@ -64,18 +57,24 @@ function init() {
 		if ( xhr.lengthComputable ) {
 			var percentComplete = xhr.loaded / xhr.total * 100;
 			console.log( Math.round(percentComplete, 2) + '% downloaded' );
+			uploadstat.innerHTML = Math.round(percentComplete, 2) + '% downloaded';
 		}
 	};
 	var onError = function ( xhr ) {
 	};
-	THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+	// THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
 	var loader = new THREE.OBJMTLLoader();
-	loader.load( 'assets/FirstPersonExampleMap.obj', 'assets/FirstPersonExampleMap.mtl', function ( object ) {
-		object.position.y =  0;
+	loader.load( 'assets/Lobby.obj', 'assets/Lobby.mtl', function ( object ) {
+		object.position.y = 0;
+		object.rotation.x=(object.rotation.x)-90;
+
 		scene.add( object );
+		info.remove();
+		uploadstat.remove();
+		addLogo();
 	}, onProgress, onError );
 
-	//floor
+	// ground
 
 	// var texture = THREE.ImageUtils.loadTexture('assets/asphalt.jpg');
 	// texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -131,12 +130,17 @@ function init() {
 
 	vrEffect = new THREE.VREffect(renderer, VREffectLoaded);
 	vrControls = new THREE.VRControls(camera);
+	// controls = new THREE.OrbitControls( camera );
+	// controls.addEventListener( 'change', render );
+
 	function VREffectLoaded(error) {
 		if (error) {
 			fullScreenButton.innerHTML = error;
 			fullScreenButton.classList.add('error');
 		}
 	}
+
+	var mgr = new WebVRManager(vrEffect);
 
 	renderer.setClearColor( 0x7ec0ee );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -165,6 +169,7 @@ function onWindowResize() {
 function animate() {
 
 	requestAnimationFrame( animate );
+
 	render();
 	stats.update();
 
@@ -172,12 +177,7 @@ function animate() {
 
 function render() {
 
-	theta += 0.05;
-
-	camera.position.x = radius * Math.sin( 2*THREE.Math.degToRad( theta ) );
-	camera.position.y = radius * Math.abs(Math.sin( THREE.Math.degToRad( theta ) ));
-	camera.position.z = radius * Math.cos( 2*THREE.Math.degToRad( theta ) );
-	camera.lookAt( scene.position );
+	setControls();
 
 	// find intersections
 
@@ -190,3 +190,118 @@ function render() {
 	vrEffect.render( scene, camera );
 
 }
+
+function setControls() {
+    
+   
+    var controls = {
+        left: false,
+        up: false,
+        right: false,
+        down: false
+    };
+    
+    jQuery(document).keydown(function (e) {
+        var prevent = true;
+        // Update the state of the attached control to "true"
+        switch (e.keyCode) {
+            case 37:
+                controls.left = true;
+                break;
+            case 38:
+                controls.up = true;
+                break;
+            case 39:
+                controls.right = true;
+                break;
+            case 40:
+                controls.down = true;
+                break;
+            default:
+                prevent = false;
+        }
+        // Avoid the browser to react unexpectedly
+        if (prevent) {
+            e.preventDefault();
+        } else {
+            return;
+        }
+        // Update the character's direction
+        setDirection(controls);
+    });
+
+    // When the user releases a key
+    jQuery(document).keyup(function (e) {
+        var prevent = true;
+        // Update the state of the attached control to "false"
+        switch (e.keyCode) {
+            case 37:
+                controls.left = false;
+                break;
+            case 38:
+                controls.up = false;
+                break;
+            case 39:
+                controls.right = false;
+                break;
+            case 40:
+                controls.down = false;
+                break;
+            default:
+                prevent = false;
+        }
+        // Avoid the browser to react unexpectedly
+        if (prevent) {
+            e.preventDefault();
+        } else {
+            return;
+        }
+        // Update the character's direction
+        setDirection(controls);
+    });
+
+    // On resize
+    jQuery(window).resize(function () {
+        // Redefine the size of the renderer
+        onWindowResize();
+    });
+}
+
+function setDirection(controls) {
+
+	if(controls.left==true){
+    	camera.position.x=camera.position.x-0.01;
+    }
+    else if(controls.right==true){
+    	camera.position.x=camera.position.x+0.01;
+    }
+    else if(controls.up==true){
+    	camera.position.z=camera.position.z-0.01;
+    }
+    else if(controls.down==true){
+    	camera.position.z=camera.position.z+0.01;
+    }
+
+    camera.lookAt(scene.position);
+}
+
+function addLogo() {
+
+	var logo = document.createElement( 'div' );
+	logo.style.position = 'absolute';
+	logo.style.bottom = '10px';
+	logo.style.left = '10px';
+	// logo.style.width = '100%';
+	logo.style.textAlign = 'center';
+	logo.style.fontSize = '30px';
+	logo.style.color = 'white';
+	logo.style.fontFamily = "Arial,Charcoal,sans-serif";
+	logo.innerHTML = 'GacVR';
+	container.appendChild( logo );
+		
+}
+
+
+
+
+
