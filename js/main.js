@@ -22,14 +22,17 @@ function init() {
 	info.style.top = '10px';
 	info.style.width = '100%';
 	info.style.textAlign = 'center';
+	info.style.fontSize = '150px';
+	info.style.color = 'white';
+	info.style.fontFamily = "Arial,Charcoal,sans-serif";
 	info.innerHTML = 'GacVR';
 	container.appendChild( info );
 
 	var uploadstat = document.createElement( 'div' );
 	uploadstat.style.position = 'absolute';
-	uploadstat.style.top = '150px';
+	uploadstat.style.top = '350px';
 	uploadstat.style.width = '100%';
-	uploadstat.style.size = '25px';
+	uploadstat.style.fontSize = '25px';
 	uploadstat.style.textAlign = 'center';
 	container.appendChild( uploadstat );
 
@@ -77,18 +80,17 @@ function init() {
 			var percentComplete = xhr.loaded / xhr.total * 100;
 			console.log( Math.round(percentComplete, 2) + '% downloaded' );
 			uploadstat.innerHTML = Math.round(percentComplete, 2) + '% downloaded';
-			if ( percentComplete == 100 ) {
-				uploadstat.innerHTML = "";
-			};
 		}
 	};
 	var onError = function ( xhr ) {
 	};
 	// THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
 	var loader = new THREE.OBJMTLLoader();
-	loader.load( 'assets/FirstPersonExampleMap.obj', 'assets/FirstPersonExampleMap.mtl', function ( object ) {
+	loader.load( 'assets/Lobby.obj', 'assets/Lobby.mtl', function ( object ) {
 		object.position.y =  0;
 		scene.add( object );
+		info.remove();
+		uploadstat.remove();
 	}, onProgress, onError );
 
 	//floor
@@ -147,12 +149,17 @@ function init() {
 
 	vrEffect = new THREE.VREffect(renderer, VREffectLoaded);
 	vrControls = new THREE.VRControls(camera);
+	// controls = new THREE.OrbitControls( camera );
+ //  	controls.addEventListener( 'change', render );
+
 	function VREffectLoaded(error) {
 		if (error) {
 			fullScreenButton.innerHTML = error;
 			fullScreenButton.classList.add('error');
 		}
 	}
+
+	var mgr = new WebVRManager(vrEffect);
 
 	renderer.setClearColor( 0x7ec0ee );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -181,6 +188,7 @@ function onWindowResize() {
 function animate() {
 
 	requestAnimationFrame( animate );
+
 	render();
 	stats.update();
 
@@ -189,7 +197,6 @@ function animate() {
 function render() {
 
 	setControls();
-
 
 	// find intersections
 
