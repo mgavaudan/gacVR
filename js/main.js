@@ -39,7 +39,8 @@ function init() {
 	scene = new THREE.Scene();
 
 	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 100000 );
-	camera.position.y=250;
+	camera.position.y=45;
+	camera.position.x=25;
 	
 	scene.add( camera );
 	
@@ -87,13 +88,14 @@ function init() {
 	// THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'assets/Lobby.obj', 'assets/Lobby.mtl', function ( object ) {
-		object.position.y =  0;
+		object.position.y = 0;
+		object.rotation.x=(object.rotation.x)-90;
+
 		scene.add( object );
 		info.remove();
 		uploadstat.remove();
 	}, onProgress, onError );
 
-	//floor
 
 	// var texture = THREE.ImageUtils.loadTexture('assets/asphalt.jpg');
 	// texture.wrapS = texture.wrapT = THREE.RepeatWrapping;

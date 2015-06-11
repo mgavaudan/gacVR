@@ -32,7 +32,7 @@ Tf 0.0000 0.0000 0.0000
 d 0.2000
 Ns 255
 
-newmtl /brushed_Steel
+newmtl brushedsteel
 Ka 0.0000 0.0000 0.0000
 Kd 0.0000 0.0000 0.0000
 Ks 1.0000 1.0000 1.0000
@@ -40,7 +40,7 @@ Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 165.7
 
-newmtl /mirror
+newmtl mirror
 Ka 0.0000 0.0000 0.0000
 Kd 0.0000 0.0000 0.0000
 Ks 1.0000 1.0000 1.0000
@@ -48,7 +48,7 @@ Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 255
 
-newmtl /Studio_Wall
+newmtl studiowall
 Ka 0.0000 0.0000 0.0000
 Kd 1.0000 1.0000 1.0000
 Ks 1.0000 1.0000 1.0000
@@ -64,7 +64,7 @@ Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 0
 
-newmtl /Wood_8
+newmtl wood8
 Ka 0.0000 0.0000 0.0000
 Kd 0.5020 0.5020 0.5020
 Ks 1.0000 1.0000 1.0000
@@ -72,7 +72,7 @@ Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 178.5
 
-newmtl /mailbox
+newmtl mailbox
 Ka 0.0000 0.0000 0.0000
 Kd 0.5020 0.5020 0.5020
 Ks 1.0000 1.0000 1.0000
@@ -80,7 +80,7 @@ Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 165.7
 
-newmtl /Marble_61
+newmtl marble61
 Ka 0.0000 0.0000 0.0000
 Kd 0.5020 0.5020 0.5020
 Ks 1.0000 1.0000 1.0000
@@ -89,7 +89,7 @@ d 1.0000
 Ns 127.5
 map_Kd 650_lg.jpg
 
-newmtl /cembonit_dark
+newmtl cembonitdark
 Ka 0.0000 0.0000 0.0000
 Kd 0.2627 0.2588 0.2588
 Ks 1.0000 1.0000 1.0000
@@ -98,7 +98,7 @@ d 1.0000
 Ns 153
 map_Kd CEMBON~1.JPG
 
-newmtl /Studio_Wall(No reflection)
+newmtl studiowallnoref
 Ka 0.0000 0.0000 0.0000
 Kd 0.0000 0.0000 0.0000
 Ks 1.0000 1.0000 1.0000
@@ -106,7 +106,7 @@ Tf 0.0000 0.0000 0.0000
 d 1.0000
 Ns 0
 
-newmtl /Painting1
+newmtl painting1
 Ka 0.0000 0.0000 0.0000
 Kd 0.5020 0.5020 0.5020
 Ks 1.0000 1.0000 1.0000
@@ -115,7 +115,7 @@ d 1.0000
 Ns 0
 map_Kd UNTITL~1.JPG
 
-newmtl /Painting2
+newmtl painting2
 Ka 0.0000 0.0000 0.0000
 Kd 0.5020 0.5020 0.5020
 Ks 1.0000 1.0000 1.0000
@@ -124,7 +124,7 @@ d 1.0000
 Ns 0
 map_Kd 2.jpg
 
-newmtl /Painting3
+newmtl painting3
 Ka 0.0000 0.0000 0.0000
 Kd 0.5020 0.5020 0.5020
 Ks 1.0000 1.0000 1.0000
