@@ -94,6 +94,7 @@ function init() {
 		scene.add( object );
 		info.remove();
 		uploadstat.remove();
+		addLogo();
 	}, onProgress, onError );
 
 
@@ -290,20 +291,36 @@ function setControls() {
 
 function setDirection(controls) {
 
-		if(controls.left==true){
-        	camera.position.x=camera.position.x-0.01;
-        }
-        else if(controls.right==true){
-        	camera.position.x=camera.position.x+0.01;
-        }
-        else if(controls.up==true){
-        	camera.position.z=camera.position.z-0.01;
-        }
-        else if(controls.down==true){
-        	camera.position.z=camera.position.z+0.01;
-        }
+	if(controls.left==true){
+    	camera.position.x=camera.position.x-0.01;
+    }
+    else if(controls.right==true){
+    	camera.position.x=camera.position.x+0.01;
+    }
+    else if(controls.up==true){
+    	camera.position.z=camera.position.z-0.01;
+    }
+    else if(controls.down==true){
+    	camera.position.z=camera.position.z+0.01;
+    }
 
-        camera.lookAt(scene.position);
+    camera.lookAt(scene.position);
+}
+
+function addLogo() {
+
+	var logo = document.createElement( 'div' );
+	logo.style.position = 'absolute';
+	logo.style.bottom = '10px';
+	logo.style.left = '10px';
+	// logo.style.width = '100%';
+	logo.style.textAlign = 'center';
+	logo.style.fontSize = '30px';
+	logo.style.color = 'white';
+	logo.style.fontFamily = "Arial,Charcoal,sans-serif";
+	logo.innerHTML = 'GacVR';
+	container.appendChild( logo );
+		
 }
 
 
